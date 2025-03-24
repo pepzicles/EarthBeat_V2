@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NASA EPIC Proxy Server</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        code {
+            background: #f4f4f4;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+        pre {
+            background: #f4f4f4;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        .endpoint {
+            border-left: 4px solid #0B3D91;
+            padding-left: 15px;
+            margin: 20px 0;
+        }
+        h1, h2, h3 {
+            color: #0B3D91;
+        }
+    </style>
+</head>
+<body>
+    <h1>NASA EPIC Proxy Server</h1>
+    <p>This server proxies requests to NASA's EPIC API and images to solve CORS issues for web applications.</p>
+    
+    <h2>Endpoints:</h2>
+    
+    <div class="endpoint">
+        <h3>1. Proxy for EPIC API</h3>
+        <code>GET /epic-api?date=YYYY-MM-DD&apiKey=YOUR_API_KEY</code>
+        <p>Returns the EPIC API data for the specified date.</p>
+        
+        <h4>Parameters:</h4>
+        <ul>
+            <li><code>date</code>: Date in YYYY-MM-DD format</li>
+            <li><code>apiKey</code>: Your NASA API key</li>
+        </ul>
+        
+        <h4>Example:</h4>
+        <a href="/epic-api?date=2022-01-01&apiKey=DEMO_KEY">/epic-api?date=2022-01-01&apiKey=DEMO_KEY</a>
+    </div>
+    
+    <div class="endpoint">
+        <h3>2. Proxy for EPIC Images</h3>
+        <code>GET /epic-image?year=YYYY&month=MM&day=DD&imageName=image_name</code>
+        <p>Returns the actual image from NASA's servers.</p>
+        
+        <h4>Parameters:</h4>
+        <ul>
+            <li><code>year</code>: Year (YYYY)</li>
+            <li><code>month</code>: Month (MM)</li>
+            <li><code>day</code>: Day (DD)</li>
+            <li><code>imageName</code>: Image identifier without extension</li>
+        </ul>
+        
+        <h4>Example:</h4>
+        <a href="/epic-image?year=2022&month=01&day=01&imageName=epic_1b_20220101001751">/epic-image?year=2022&month=01&day=01&imageName=epic_1b_20220101001751</a>
+    </div>
+    
+    <h2>Usage in Your Application:</h2>
+    <pre>
+// Example of fetching and displaying an EPIC image
+fetch('http://localhost:3000/epic-api?date=2022-01-01&apiKey=YOUR_API_KEY')
+  .then(response => response.json())
+  .then(data => {
+    if (data && data.length > 0) {
+      const image = data[0];
+      const dateStr = image.date.substring(0, 10);
+      const [year, month, day] = dateStr.split('-');
+      
+      const imageUrl = `http://localhost:3000/epic-image?year=${year}&month=${month}&day=${day}&imageName=${image.image}`;
+      
+      // Display the image
+      document.getElementById('earthImage').src = imageUrl;
+    }
+  });
+    </pre>
+</body>
+</html>
